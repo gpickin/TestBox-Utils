@@ -202,7 +202,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !apiResponse.messages.len() ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have no messages.";
@@ -233,7 +233,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( apiResponse.messages.len() ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have some messages.";
@@ -264,7 +264,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( apiResponse.messages.len() == 1 ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] message when you did not expect it to have 1 message.";
@@ -298,7 +298,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( apiResponse.messages.len() == expectedCount ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have #args.expectedCount# messages.";
@@ -332,7 +332,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !apiResponse.messages.len() gt expectedCount ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have more than #args.expectedCount# messages.";
@@ -366,7 +366,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !apiResponse.messages.len() gte expectedCount ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have more than or equal to #args.expectedCount# messages.";
@@ -399,7 +399,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !apiResponse.messages.len() lt expectedCount ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have less than to #args.expectedCount# messages.";
@@ -433,7 +433,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !apiResponse.messages.len() lte expectedCount ) {
                 expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have less than or equal to #args.expectedCount# messages.";
@@ -466,7 +466,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !isSimpleValue( apiResponse.data ) || !apiResponse.data.len() == 0 ) {
                 expectation.message = "The API Response contains data of an empty string when you did not expect it to be a empty string.";
@@ -480,7 +480,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             } else if ( apiResponse.data.len() ) {
                 expectation.message = "The API Response contains data  [#apiResponse.data#] with a length of [#apiResponse.data.len()#] characters when you expected it to have an empty string.";
                 return false;
-            } 
+            }
             return true;
         }
     }
@@ -503,7 +503,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( isSimpleValue( apiResponse.data ) && isNumeric( apiResponse.data ) ) {
                 expectation.message = "The API Response contains data of a numeric type when you did not expect it to be numeric.";
@@ -517,7 +517,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             } else if ( !isNumeric( apiResponse.data ) ) {
                 expectation.message = "The API Response contains data [#apiResponse.data#] which is not numeric when you expected it to be numeric.";
                 return false;
-            } 
+            }
             return true;
         }
     }
@@ -538,7 +538,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) ) {
                 expectation.message = "The API Response contains data of array type when you did not expect it to be an array.";
@@ -552,11 +552,11 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             } else if ( !isArray( apiResponse.data ) ) {
                 expectation.message = "The API Response contains data which is not an Array when you expected it to be an array.";
                 return false;
-            } 
+            }
             return true;
         }
     }
-    
+
     // - ToHaveAPIResponseWithDataArrayCount()
     function toHaveAPIResponseWithDataArrayCount( expectation, args = {} ) {
         param args.expectedCount = 0;
@@ -577,9 +577,11 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
-            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() == args.expectedCount ) {
+            if (
+                !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() == args.expectedCount
+            ) {
                 expectation.message = "The API Response contains data of array type with a count of [#args.expectedCount#] when you did not expect it to be an array with a count of [#args.expectedCount#] items.";
                 return false;
             }
@@ -594,7 +596,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             } else if ( apiResponse.data.len() != args.expectedCount ) {
                 expectation.message = "The API Response contains data which is an Array with [#apiResponse.data.len()#] items when you expected it to be an array with count of [#args.expectedCount#] items.";
                 return false;
-            } 
+            }
             return true;
         }
     }
@@ -619,9 +621,11 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
-            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() GT args.expectedCount ) {
+            if (
+                !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() GT args.expectedCount
+            ) {
                 expectation.message = "The API Response contains data of array type with a count greater than [#args.expectedCount#] items when you did not expect it to be.";
                 return false;
             }
@@ -661,9 +665,11 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
-            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() GTE args.expectedCount ) {
+            if (
+                !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() GTE args.expectedCount
+            ) {
                 expectation.message = "The API Response contains data of array type with a count greater than or equal to [#args.expectedCount#] items when you did not expect it to be.";
                 return false;
             }
@@ -703,9 +709,11 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
-            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() LT args.expectedCount ) {
+            if (
+                !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() LT args.expectedCount
+            ) {
                 expectation.message = "The API Response contains data of array type with a count less than [#args.expectedCount#] items when you did not expect it to be.";
                 return false;
             }
@@ -745,9 +753,11 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
-            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() LTE args.expectedCount ) {
+            if (
+                !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() LTE args.expectedCount
+            ) {
                 expectation.message = "The API Response contains data of array type with a count less than or equal to [#args.expectedCount#] items when you did not expect it to be.";
                 return false;
             }
@@ -766,8 +776,8 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             return true;
         }
     }
-    
-    
+
+
     // - ToHaveAPIResponseWithDataStruct()
     function toHaveAPIResponseWithDataStruct( expectation, args = {} ) {
         param args.expectedMessage = "";
@@ -784,7 +794,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
         if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
             return false;
         }
-        
+
         if ( expectation.isNot ) {
             if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) ) {
                 expectation.message = "The API Response contains data of struct type when you did not expect it to be a struct.";
@@ -798,7 +808,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             } else if ( !isStruct( apiResponse.data ) ) {
                 expectation.message = "The API Response contains data which is not an Struct when you expected it to be a Struct.";
                 return false;
-            } 
+            }
             return true;
         }
     }
