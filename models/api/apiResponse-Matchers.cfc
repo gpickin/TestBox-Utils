@@ -2,27 +2,7 @@ component singleton extends="testboxUtils.models.baseMatcher" {
 
     // TODO: TO BE IMPLEMENTED
     // - ToHaveAPIErrorWithMessage( “partial message”, type="complete|regex|contains|startsWith|endWith" ) //position=any
-    // - toHaveAPIResponseWithOneMessage()
-    // - toHaveAPIResponseWithSomeMessages()
-    // - toHaveAPIResponseWithNoMessages()
-    // - toHaveAPIResponseWithMessagesCount( "number")
-    // - toHaveAPIResponseWithMessagesCount( "!=", "number")
-    // - expect( getAPIResponseMessages() ).toHaveLengthGTE( 1 )
-    // - ToHaveAPIResponseWithMessagesCountGt()
-    // - ToHaveAPIResponseWithMessagesCountGte()
-    // - ToHaveAPIResponseWithMessagesCountLt()
-    // - ToHaveAPIResponseWithMessagesCountLte()
-    // - ToHaveAPIResponseWithDataEmptyString()
-    // - ToHaveAPIResponseWithDataString()
-    // - ToHaveAPIResponseWithDataNumber()
-    // - ToHaveAPIResponseWithDataArray()
-    // - ToHaveAPIResponseWithDataArrayCount()
-    // - ToHaveAPIResponseWithDataArrayCountGt()
-    // - ToHaveAPIResponseWithDataArrayCountGte()
-    // - ToHaveAPIResponseWithDataArrayCountLt()
-    // - ToHaveAPIResponseWithDataArrayCountLte()
-    // - ToHaveAPIResponseWithDataStruct()
-    // - ToHaveAPIResponseWithDataEmptyString()
+    // - expect( getAPIResponseMessages( event ) ).toHaveLengthGTE( 1 )
 
     helpers = new "apiResponse-helpers"( );
 
@@ -206,6 +186,623 @@ component singleton extends="testboxUtils.models.baseMatcher" {
             return true;
         }
     }
+
+    function toHaveAPIResponseWithNoMessages( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !apiResponse.messages.len() ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have no messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( apiResponse.messages.len() ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have no messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function toHaveAPIResponseWithSomeMessages( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( apiResponse.messages.len() ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have some messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( !apiResponse.messages.len() ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have some messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function toHaveAPIResponseWithOneMessage( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( apiResponse.messages.len() == 1 ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] message when you did not expect it to have 1 message.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( !apiResponse.messages.len() == 1 ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have 1 messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function toHaveAPIResponseWithMessageCount( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( apiResponse.messages.len() == expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have #args.expectedCount# messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( !apiResponse.messages.len() == expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have #expectedCount# messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function ToHaveAPIResponseWithMessagesCountGt( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !apiResponse.messages.len() gt expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have more than #args.expectedCount# messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( apiResponse.messages.len() gt expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have more than #expectedCount# messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function ToHaveAPIResponseWithMessagesCountGte( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !apiResponse.messages.len() gte expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have more than or equal to #args.expectedCount# messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( apiResponse.messages.len() gte expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have more than or equal to #expectedCount# messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function ToHaveAPIResponseWithMessagesCountLte( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !apiResponse.messages.len() lt expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have less than to #args.expectedCount# messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( apiResponse.messages.len() lt expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have less than to #expectedCount# messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    function ToHaveAPIResponseWithMessagesCountLTE( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !apiResponse.messages.len() lte expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you did not expect it to have less than or equal to #args.expectedCount# messages.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( apiResponse.messages.len() lte expectedCount ) {
+                expectation.message = "The API Response contains [#apiResponse.messages.len()#] messages when you expected it to have less than or equal to #expectedCount# messages.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+
+    // - ToHaveAPIResponseWithDataEmptyString()
+    function toHaveAPIResponseWithDataEmptyString( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) || !apiResponse.data.len() == 0 ) {
+                expectation.message = "The API Response contains data of an empty string when you did not expect it to be a empty string.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( !isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not a simple value when you expected an empty string.";
+                return false;
+            } else if ( apiResponse.data.len() ) {
+                expectation.message = "The API Response contains data  [#apiResponse.data#] with a length of [#apiResponse.data.len()#] characters when you expected it to have an empty string.";
+                return false;
+            } 
+            return true;
+        }
+    }
+
+    // - TODO: ToHaveAPIResponseWithDataString()
+
+    // - ToHaveAPIResponseWithDataNumeric()
+    function toHaveAPIResponseWithDataNumeric( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( isSimpleValue( apiResponse.data ) && isNumeric( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data of a numeric type when you did not expect it to be numeric.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( !isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not a simple value when you expected it to be numeric.";
+                return false;
+            } else if ( !isNumeric( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data [#apiResponse.data#] which is not numeric when you expected it to be numeric.";
+                return false;
+            } 
+            return true;
+        }
+    }
+
+    // - ToHaveAPIResponseWithDataArray()
+    function toHaveAPIResponseWithDataArray( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data of array type when you did not expect it to be an array.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be an array.";
+                return false;
+            } else if ( !isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Array when you expected it to be an array.";
+                return false;
+            } 
+            return true;
+        }
+    }
+    
+    // - ToHaveAPIResponseWithDataArrayCount()
+    function toHaveAPIResponseWithDataArrayCount( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() == args.expectedCount ) {
+                expectation.message = "The API Response contains data of array type with a count of [#args.expectedCount#] when you did not expect it to be an array with a count of [#args.expectedCount#] items.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be an array with a count of [#args.expectedCount#] items.";
+                return false;
+            } else if ( !isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Array when you expected it to be an array.";
+                return false;
+            } else if ( apiResponse.data.len() != args.expectedCount ) {
+                expectation.message = "The API Response contains data which is an Array with [#apiResponse.data.len()#] items when you expected it to be an array with count of [#args.expectedCount#] items.";
+                return false;
+            } 
+            return true;
+        }
+    }
+
+    // - ToHaveAPIResponseWithDataArrayCountGt()
+    function toHaveAPIResponseWithDataArrayCountGt( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() GT args.expectedCount ) {
+                expectation.message = "The API Response contains data of array type with a count greater than [#args.expectedCount#] items when you did not expect it to be.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be an array with a count greater than [#args.expectedCount#] items.";
+                return false;
+            } else if ( !isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Array when you expected it to be an array  with a count greater than [#args.expectedCount#] items.";
+                return false;
+            } else if ( apiResponse.data.len() != args.expectedCount ) {
+                expectation.message = "The API Response contains data which is an Array with [#apiResponse.data.len()#] items when you expected it to be an array with count greater than [#args.expectedCount#] items.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    // - ToHaveAPIResponseWithDataArrayCountGte()
+    function toHaveAPIResponseWithDataArrayCountGte( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() GTE args.expectedCount ) {
+                expectation.message = "The API Response contains data of array type with a count greater than or equal to [#args.expectedCount#] items when you did not expect it to be.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be an array with a count greater than or equal to [#args.expectedCount#] items.";
+                return false;
+            } else if ( !isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Array when you expected it to be an array with a count greater than or equal to [#args.expectedCount#] items.";
+                return false;
+            } else if ( apiResponse.data.len() != args.expectedCount ) {
+                expectation.message = "The API Response contains data which is an Array with [#apiResponse.data.len()#] items when you expected it to be an array with count greater than [#args.expectedCount#] items.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    // - ToHaveAPIResponseWithDataArrayCountLt()
+    function toHaveAPIResponseWithDataArrayCountGt( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() LT args.expectedCount ) {
+                expectation.message = "The API Response contains data of array type with a count less than [#args.expectedCount#] items when you did not expect it to be.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be an array with a count less than [#args.expectedCount#] items.";
+                return false;
+            } else if ( !isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Array when you expected it to be an array  with a count less than [#args.expectedCount#] items.";
+                return false;
+            } else if ( apiResponse.data.len() != args.expectedCount ) {
+                expectation.message = "The API Response contains data which is an Array with [#apiResponse.data.len()#] items when you expected it to be an array with count less than [#args.expectedCount#] items.";
+                return false;
+            }
+            return true;
+        }
+    }
+
+    // - ToHaveAPIResponseWithDataArrayCountLte()
+    function toHaveAPIResponseWithDataArrayCountGte( expectation, args = {} ) {
+        param args.expectedCount = 0;
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedCount = args[ 1 ];
+        }
+        if ( structKeyExists( args, 2 ) ) {
+            args.expectedMessage = args[ 2 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) && apiResponse.data.len() LTE args.expectedCount ) {
+                expectation.message = "The API Response contains data of array type with a count less than or equal to [#args.expectedCount#] items when you did not expect it to be.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be an array with a count less than or equal to [#args.expectedCount#] items.";
+                return false;
+            } else if ( !isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Array when you expected it to be an array with a count less than or equal to [#args.expectedCount#] items.";
+                return false;
+            } else if ( apiResponse.data.len() != args.expectedCount ) {
+                expectation.message = "The API Response contains data which is an Array with [#apiResponse.data.len()#] items when you expected it to be an array with count less than [#args.expectedCount#] items.";
+                return false;
+            }
+            return true;
+        }
+    }
+    
+    
+    // - ToHaveAPIResponseWithDataStruct()
+    function toHaveAPIResponseWithDataStruct( expectation, args = {} ) {
+        param args.expectedMessage = "";
+        if ( structKeyExists( args, 1 ) ) {
+            args.expectedMessage = args[ 1 ];
+        }
+
+        try {
+            var apiResponse = helpers.getAPIResponse( expectation.actual );
+        } catch ( any e ) {
+            expectation.message = "Item passed may not be JSON, API Response Struct, or Event";
+            return false;
+        }
+        if ( !toHaveAPIResponse( expectation, { "getAPIResponse": apiResponse } ) ) {
+            return false;
+        }
+        
+        if ( expectation.isNot ) {
+            if ( !isSimpleValue( apiResponse.data ) && isArray( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data of struct type when you did not expect it to be a struct.";
+                return false;
+            }
+            return true;
+        } else {
+            if ( isSimpleValue( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is a simple value [#apiResponse.data#] when you expected it to be a struct.";
+                return false;
+            } else if ( !isStruct( apiResponse.data ) ) {
+                expectation.message = "The API Response contains data which is not an Struct when you expected it to be a Struct.";
+                return false;
+            } 
+            return true;
+        }
+    }
+
 
     /**
      * Private helper function
